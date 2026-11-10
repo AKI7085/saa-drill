@@ -130,6 +130,25 @@ p { margin: 0; }
 .xsw button:hover { color: var(--ink); }
 .xsw button[aria-pressed="true"] { color: var(--bg); background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 .xsw button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 試験を選ぶ画面（開いた直後とロゴから） */
+#app[data-entry="1"] .xsw, #app[data-entry="1"] .tabs { display: none; }
+.select-head { display: grid; gap: 8px; justify-items: center; text-align: center; padding-top: 6px; }
+.select-head .lead { max-width: 36em; }
+.xcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 720px) { .xcards { grid-template-columns: 1fr; } }
+.xcard { padding: 22px 20px 20px; gap: 12px; cursor: pointer; }
+.xcard:hover { border-color: var(--line-strong); box-shadow: 0 0 24px rgba(59, 231, 245, 0.12); }
+.xcard-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.xcard-flags { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.xcard-abbr { font-family: var(--font-hud); font-size: 40px; font-weight: 700; letter-spacing: 0.14em; line-height: 1; color: var(--accent); text-shadow: 0 0 18px var(--accent-glow); }
+.xcard-names { display: grid; gap: 4px; }
+.xcard .xcard-name { font-family: var(--font-hud); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+.xcard .xcard-ja { font-size: 13px; color: var(--muted); }
+.xcard .xcard-about { font-size: 13.5px; color: var(--ink); opacity: 0.85; }
+.xcard .readouts { margin: 0; }
+.xcard .readouts dd { font-size: 20px; }
+.xcard .xcard-rec { font-size: 12.5px; }
+.xcard.card .btn { justify-self: stretch; margin-top: 2px; }
 .code-tag { display: inline-block; vertical-align: middle; margin-left: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: 0.08em; color: var(--accent); border: 1px solid var(--line-strong); border-radius: 2px; padding: 2px 7px; line-height: 1.4; }
 .tabs { display: flex; gap: 4px; justify-content: center; }
 .tabs a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 3px; text-decoration: none; color: var(--muted); font-weight: 700; font-size: 13.5px; border: 1px solid transparent; }
@@ -478,7 +497,7 @@ select { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 3px; 
 <div id="app">
   <header class="bar">
     <div class="bar-in">
-      <div class="brand-wrap"><a class="brand" href="#home" aria-label="AWS ドリル ホーム"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">AWS<i>//</i>DRILL</span></a><div class="xsw" id="xsw" role="group" aria-label="試験の切り替え"></div></div>
+      <div class="brand-wrap"><a class="brand" href="#home" data-act="open-select" aria-label="AWS ドリル 試験を選ぶ画面へ"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">AWS<i>//</i>DRILL</span></a><div class="xsw" id="xsw" role="group" aria-label="試験の切り替え"></div></div>
       <nav class="tabs" aria-label="画面">
         <a href="#home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5H9v5H4z"/></svg><span>ホーム</span></a>
         <a href="#practice" data-tab="practice"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><span>演習</span></a>
@@ -504,6 +523,8 @@ const BUILD = {"builtAt":"2026-11-10","count":{"saa":236,"clf":236}};
 const EXAMS = {
   saa: {
     key: 'saa', code: 'SAA-C03', short: 'SAA', title: 'ソリューションアーキテクト – アソシエイト',
+    name: 'AWS Certified Solutions Architect – Associate', ja: 'AWS 認定ソリューションアーキテクト – アソシエイト',
+    about: 'AWS で安全・高可用・高性能・低コストな構成を設計する力を問う、アソシエイトレベルの資格。',
     n: 65, min: 130, pass: 72, scaled: 720, ls: 'saa-drill', doc: 'progress',
     domains: [
       { n: 1, name: 'セキュアなアーキテクチャの設計', short: 'セキュア', w: 30 },
@@ -521,6 +542,8 @@ const EXAMS = {
   },
   clf: {
     key: 'clf', code: 'CLF-C02', short: 'CLF', title: 'クラウドプラクティショナー',
+    name: 'AWS Certified Cloud Practitioner', ja: 'AWS 認定クラウドプラクティショナー',
+    about: 'AWS クラウドの考え方・セキュリティ・主要サービス・料金とサポートを問う、基礎レベルの資格。',
     n: 65, min: 90, pass: 70, scaled: 700, ls: 'saa-drill/clf', doc: 'progress-clf',
     domains: [
       { n: 1, name: 'クラウドのコンセプト', short: 'コンセプト', w: 24 },
@@ -549,8 +572,9 @@ function applyExam(k) {
   HIGH_FREQ = new Set(X.high);
   STRATEGY = X.strategy;
   QMAP = Object.fromEntries(QUESTIONS.map((q) => [q.id, q]));
-  LS = { progress: X.ls + '/progress/v1', sessions: X.ls + '/sessions/v1', prefs: X.ls + '/prefs/v1' };
+  LS = lsKeys(X);
 }
+function lsKeys(x) { return { progress: x.ls + '/progress/v1', sessions: x.ls + '/sessions/v1', prefs: x.ls + '/prefs/v1' }; }
 applyExam(lsGet(LS_EXAM));
 const topicWeight = (t) => (HIGH_FREQ.has(t) ? 1 : 0.7);
 const GEO = { CW: 200, CH: 120, NW: 120, NH: 48, PAD: 14 };
@@ -790,6 +814,8 @@ const saveSessions = () => lsSet(LS.sessions, sessions);
 const loadPrefs = () => Object.assign({ domains: [1, 2, 3, 4], count: '10', order: 'smart', topic: '' }, lsGet(LS.prefs) || {});
 let prefs = loadPrefs();
 const ui = { confirm: null, detail: null, examView: null };
+// 開いた直後は試験を選ぶ画面を出す（ヘッダーのロゴからも戻れる）
+let entry = true;
 
 function newSession(kind, ids) {
   return {
@@ -1282,16 +1308,17 @@ function route() { const h = (location.hash || '').slice(1); return VIEWS[h] ? h
 function render() {
   const r = route();
   const active = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.key : null;
-  document.getElementById('view').innerHTML = VIEWS[r]();
+  document.getElementById('app').dataset.entry = entry ? '1' : '';
+  document.getElementById('view').innerHTML = entry ? viewSelect() : VIEWS[r]();
   for (const a of document.querySelectorAll('.tabs a')) {
-    if (a.dataset.tab === r) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    if (!entry && a.dataset.tab === r) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   }
   if (active) { const el = document.querySelector(`[data-key="${active}"]`); if (el) el.focus({ preventScroll: true }); }
   ensureTimer();
 }
 function refreshPassive() {
   const r = route();
-  const busy = (r === 'practice' && sessions.practice && !sessions.practice.finished) || (r === 'exam' && sessions.exam && !sessions.exam.finished);
+  const busy = !entry && ((r === 'practice' && sessions.practice && !sessions.practice.finished) || (r === 'exam' && sessions.exam && !sessions.exam.finished));
   if (!busy) render();
 }
 function go(r) {
@@ -1306,6 +1333,44 @@ function renderSwitch() {
   const el = document.getElementById('xsw');
   if (!el) return;
   el.innerHTML = EXAM_KEYS.length < 2 ? '' : EXAM_KEYS.map((k) => `<button type="button" data-act="exam-switch" data-x="${k}" aria-pressed="${k === X.key}" title="${esc(EXAMS[k].code + ' ' + EXAMS[k].title)}" aria-label="${esc(EXAMS[k].code + ' ' + EXAMS[k].title)}">${esc(EXAMS[k].short)}</button>`).join('');
+}
+// 試験を選ぶ画面。選んでいない試験の進み具合は、この端末に保存した記録から出す。
+function examSnapshot(k) {
+  const x = EXAMS[k];
+  const qs = BANK[k] || [];
+  const keys = lsKeys(x);
+  const p = k === X.key ? progress : normalize(lsGet(keys.progress));
+  const s = (k === X.key ? sessions : lsGet(keys.sessions)) || {};
+  const ids = new Set(qs.map((q) => q.id));
+  let answered = 0, ok = 0;
+  for (const [id, v] of Object.entries(p.stats)) { if (!v || !ids.has(id)) continue; answered++; if (v.l) ok++; }
+  const best = p.exams.length ? Math.max(...p.exams.map((e) => (e.n ? pct(e.c / e.n) : 0))) : null;
+  const examOn = !!(s.exam && !s.exam.finished && Array.isArray(s.exam.ids));
+  return { x, total: qs.length, answered, rate: answered ? ok / answered : null, best, examOn };
+}
+function viewSelect() {
+  const last = lsGet(LS_EXAM);
+  const cards = EXAM_KEYS.map((k) => {
+    const v = examSnapshot(k), x = v.x;
+    const rec = v.answered ? `正答率 ${pct(v.rate)}%${v.best != null ? ` · 模試ベスト ${v.best}%` : ''}` : 'まだ解いていません';
+    return `<article class="xcard card emph" data-act="enter-exam" data-x="${k}" aria-label="${esc(x.name)}">
+      <div class="xcard-top"><span class="xcard-abbr">${esc(x.short)}</span><span class="xcard-flags">${v.examOn ? '<span class="chip flag">模擬試験の途中</span>' : ''}${k === last ? '<span class="status scan"><i></i>前回の試験</span>' : ''}</span></div>
+      <div class="xcard-names"><p class="xcard-name">${esc(x.name)}</p><p class="xcard-ja">${esc(x.ja)}<span class="code-tag">${esc(x.code)}</span></p></div>
+      <p class="xcard-about">${esc(x.about)}</p>
+      <dl class="readouts">
+        <div><dt>本番</dt><dd>${x.n}<small>問</small> ${x.min}<small>分</small></dd></div>
+        <div><dt>合格ライン</dt><dd>${x.scaled}<small>/1000</small></dd></div>
+        <div><dt>回答済み</dt><dd>${v.answered}<small>/${v.total}</small></dd></div>
+      </dl>
+      <p class="xcard-rec">${rec}</p>
+      <button type="button" class="btn primary" data-act="enter-exam" data-x="${k}">${esc(x.short)} で始める</button>
+    </article>`;
+  }).join('');
+  const counts = EXAM_KEYS.map((k) => `${EXAMS[k].short} ${(BANK[k] || []).length} 問`).join(' · ');
+  return `
+  <section class="select-head"><span class="hud-label">SELECT MISSION</span><h1>受ける試験を選んでください</h1><p class="lead">試験ごとに問題・学習記録・模擬試験が分かれています。あとからヘッダーのロゴでこの画面に戻れます。</p></section>
+  <section class="xcards">${cards}</section>
+  <footer class="foot"><p>問題はすべて各試験の試験ガイドの出題分野に沿って作ったオリジナルで、実際の試験問題ではありません。</p><p class="num">${counts}${BUILD.builtAt ? ' · ' + esc(BUILD.builtAt) + ' 更新' : ''}</p></footer>`;
 }
 // 試験ごとに記録・解答中の状態・演習の設定を読み直す。模擬試験の途中でも、残り時間はそのまま進む。
 function switchExam(k) {
@@ -1344,6 +1409,17 @@ document.addEventListener('click', (ev) => {
   switch (act) {
     case 'exam-switch':
       switchExam(el.dataset.x);
+      break;
+    case 'enter-exam':
+      entry = false;
+      if (el.dataset.x !== X.key) switchExam(el.dataset.x);
+      lsSet(LS_EXAM, X.key);
+      go('home');
+      break;
+    case 'open-select':
+      if (ev.preventDefault) ev.preventDefault();
+      entry = true; ui.confirm = null;
+      render(); window.scrollTo(0, 0);
       break;
     case 'quick':
       startPractice(pickPractice({ domains: [1, 2, 3, 4], count: '10', order: 'smart', topic: '' }));
@@ -1507,7 +1583,7 @@ document.addEventListener('pointermove', (ev) => {
   tip.style.top = Math.max(bar.top - box.top, 40) + 'px';
   tip.hidden = false;
 });
-window.addEventListener('hashchange', () => { ui.confirm = null; render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { entry = false; ui.confirm = null; render(); window.scrollTo(0, 0); });
 
 renderSwitch();
 render();
