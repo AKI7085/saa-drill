@@ -1,4 +1,4 @@
-const CACHE = 'saa-drill-d844d7b93868';
+const CACHE = 'saa-drill-29a69f7d8177';
 const FONTS = 'saa-drill-fonts';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', (e) => {
