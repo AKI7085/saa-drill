@@ -487,6 +487,83 @@ select { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 3px; 
 .empty { background: rgba(11, 20, 37, 0.5); border: 1px dashed var(--line-strong); border-radius: 3px; padding: 22px; color: var(--muted); display: grid; gap: 10px; justify-items: start; }
 .foot { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 4px; }
 
+/* 動画で解説（プレイヤー） */
+.fb-video { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.video-btn { gap: 6px; }
+.video-btn svg { width: 14px; height: 14px; }
+.pl-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(2, 4, 10, 0.84); }
+.pl {
+  position: fixed; z-index: 21; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(760px, calc(100vw - 24px)); height: min(660px, calc(100vh - 24px));
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  background: var(--corners), linear-gradient(var(--panel), var(--panel)), var(--bg); border: 1px solid var(--line-strong); border-radius: 2px;
+  box-shadow: 0 0 40px rgba(59, 231, 245, 0.16);
+}
+@media (max-width: 720px) {
+  .pl {
+    left: 0; top: 0; transform: none; width: 100%; height: 100%; border: 0; border-radius: 0;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+.pl-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.pl-x { display: inline-grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--line-strong); border-radius: 2px; background: none; color: var(--ink); cursor: pointer; }
+.pl-x svg { width: 16px; height: 16px; }
+.pl-screen { overflow: auto; padding: 18px 18px 12px; display: grid; gap: 14px; align-content: start; }
+.pl-title { display: grid; gap: 4px; }
+.pl-title h2 { font-size: 20px; }
+.pl-stage { display: grid; gap: 10px; min-width: 0; }
+.pl-stage .figure { margin: 0; }
+.pl-sub { margin: 0 14px; padding: 10px 12px; min-height: 4.8em; border-left: 3px solid var(--accent); background: rgba(59, 231, 245, 0.06); font-size: 15px; line-height: 1.75; color: var(--ink); }
+.pl-bar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 12px 14px 0; }
+.pl-bar button { height: 6px; padding: 0; border: 0; border-radius: 2px; background: var(--line-strong); cursor: pointer; }
+.pl-bar button.done { background: var(--accent); }
+.pl-bar button.now { background: linear-gradient(90deg, var(--accent) var(--p, 0%), var(--line-strong) var(--p, 0%)); box-shadow: 0 0 8px var(--accent-glow); }
+.pl-ctrl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 14px 14px; }
+.pl-ctrl .grow { flex: 1; }
+.pl-btn { display: inline-grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line-strong); border-radius: 50%; background: none; color: var(--ink); cursor: pointer; }
+.pl-btn svg { width: 16px; height: 16px; }
+.pl-btn.main { width: 52px; height: 52px; background: var(--accent); color: var(--bg); border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
+.pl-btn.main svg { width: 20px; height: 20px; }
+.pl-opt { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 4px 10px; border: 1px solid var(--line-strong); border-radius: 2px; background: none; color: var(--muted); font: inherit; font-size: 12.5px; cursor: pointer; }
+.pl-opt svg { width: 15px; height: 15px; }
+.pl-opt[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+.pl-opt:disabled { opacity: 0.5; cursor: default; }
+.pl-opt[hidden] { display: none; }
+.pl button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.v-ask { font-size: 15px; line-height: 1.8; }
+.v-keys { display: flex; flex-wrap: wrap; gap: 8px; }
+.v-key { padding: 5px 11px; border: 1px solid var(--accent); border-radius: 2px; color: var(--accent); font-weight: 700; background: var(--accent-soft); }
+.v-list { display: grid; gap: 8px; }
+.v-ch { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 9px 11px; border: 1px solid var(--line); border-radius: 2px; }
+.v-ch .l { font-family: var(--font-hud); font-weight: 700; color: var(--muted); }
+.v-ch .t { font-size: 14px; line-height: 1.7; }
+.v-ch.clamp .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.v-ch .m svg { width: 20px; height: 20px; }
+.v-ch.ok { border-color: var(--ok); background: var(--ok-soft); }
+.v-ch.ok .m, .v-ch.ok .l { color: var(--ok); }
+.v-ch.ng { border-color: var(--ng); background: var(--ng-soft); }
+.v-ch.ng .m, .v-ch.ng .l { color: var(--ng); }
+.v-lines { display: grid; gap: 8px; }
+.v-line { font-size: 14.5px; line-height: 1.75; color: var(--muted); opacity: 0.45; }
+.v-line.past { opacity: 0.8; }
+.v-line.on { opacity: 1; color: var(--ink); }
+.v-point { font-size: 18px; font-weight: 700; line-height: 1.75; padding: 16px; border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pl-title, .v-ask, .v-point, .v-lines { animation: vpop 0.45s both; }
+  .v-key { animation: vpop 0.45s calc(0.4s + var(--d) * 0.45s) both; }
+  .v-ch { animation: vpop 0.4s both; }
+  .v-list .v-ch:nth-child(2) { animation-delay: 0.1s; }
+  .v-list .v-ch:nth-child(3) { animation-delay: 0.2s; }
+  .v-list .v-ch:nth-child(4) { animation-delay: 0.3s; }
+  .v-list .v-ch:nth-child(5) { animation-delay: 0.4s; }
+  .v-list .v-ch:nth-child(6) { animation-delay: 0.5s; }
+  .v-ch .m { animation: vpop 0.4s 0.9s both; }
+  .pl .dg g, .pl .dg line, .pl .dg text.e-label { animation: vfade 0.5s both; }
+  .v-line { transition: opacity 0.3s, color 0.3s; }
+}
+@keyframes vpop { from { opacity: 0; transform: translateY(6px); } }
+@keyframes vfade { from { opacity: 0; } }
+
 @media (prefers-reduced-motion: no-preference) {
   .btn, .choice, .tabs a, .opt span, .grid-nav button { transition: background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s; }
   .g-sweep { animation: sweep 5s linear infinite; }
@@ -514,6 +591,7 @@ select { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 3px; 
     </div>
   </header>
   <main id="view" class="wrap" tabindex="-1"></main>
+  <div id="player" hidden></div>
 </div>
 
 <script>
@@ -631,6 +709,13 @@ const ICON = {
   ok: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".16"/><path d="M5.5 10.4l3 3 6-6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   ng: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".16"/><path d="M6.5 6.5l7 7M13.5 6.5l-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   dash: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity=".16"/><path d="M6 10h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  play: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>',
+  pause: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 4h3.5v12H5zM11.5 4H15v12h-3.5z" fill="currentColor"/></svg>',
+  prev: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 4h2v12H5zM16 4L8 10l8 6z" fill="currentColor"/></svg>',
+  next: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13 4h2v12h-2zM4 4l8 6-8 6z" fill="currentColor"/></svg>',
+  voice: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-3v10l-4-3H3z" fill="currentColor"/><path d="M13 7.5a3.5 3.5 0 010 5M15 5a7 7 0 010 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  mute: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-3v10l-4-3H3z" fill="currentColor"/><path d="M13 8l4 4M17 8l-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  close: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
 };
 
 /* ---------- 学習記録 ---------- */
@@ -981,14 +1066,196 @@ function feedback(q, perm, picks) {
   const verdict = !answered
     ? `<div class="verdict ng">${ICON.dash}<strong>未回答</strong><span class="ans">正解は ${corr}</span></div>`
     : `<div class="verdict ${ok ? 'ok' : 'ng'}">${ok ? ICON.ok : ICON.ng}<strong>${ok ? '正解' : '不正解'}</strong><span class="hud-label">${ok ? 'HIT' : 'MISS'}</span><span class="ans">正解は ${corr}</span></div>`;
+  // 間違えた（または未回答の）問題には「動画で解説」を出す。長さは読み上げる文字数からの目安（1 秒に約 7 文字）。
+  let video = '';
+  if (!ok) {
+    const chars = [...picks.filter((o) => !q.answer.includes(o)).slice(0, 2), ...q.answer].reduce((n, o) => n + q.why[o].length, 0) + q.explain.length + q.point.length + 60;
+    video = `<div class="fb-video"><button type="button" class="btn sm video-btn" data-act="video" data-id="${esc(q.id)}" data-picks="${picks.join(',')}" data-perm="${perm.join(',')}">${ICON.play}<span>動画で解説</span></button><span class="small muted">字幕と音声で、決め手から順に約 ${Math.max(1, Math.round(chars / 7 / 60))} 分で振り返ります。</span></div>`;
+  }
   return `<section class="fb" id="fb" aria-live="polite">
   ${verdict}
+  ${video}
   <div class="fb-block"><h3>解説</h3><p>${esc(q.explain)}</p></div>
   ${renderDiagram(q.diagram)}
   <div class="fb-block"><h3>選択肢ごとの理由</h3><ul class="whys">${whys}</ul></div>
   <div class="point"><h3>覚えるポイント</h3><p>${esc(q.point)}</p></div>
 </section>`;
 }
+/* ---------- 動画で解説（アニメーション＋読み上げ） ---------- */
+// 間違えた問題の解説を、場面ごとに字幕と端末の音声読み上げで再生する。問題データから組み立てるので、問題ごとの準備は要らない。
+// 読み上げは男性の日本語音声を優先し、声を少し高くして男の子らしくする。音声が使えない環境では文字数に応じた時間で進む。
+const LS_PLAYER = 'saa-drill/player/v1';
+const RATES = [0.8, 1, 1.25, 1.5];
+const BOY_PITCH = 1.25;
+const MALE_RE = /keita|ichiro|otoya|hattori|naoki|daichi|takumi|kenji|\bmale\b|男性/i;
+const player = {
+  open: false, q: null, scenes: [], i: 0, line: 0, playing: false, ended: false, timer: null, seq: 0, back: null,
+  opts: Object.assign({ voice: true, rate: 1, voiceName: '' }, lsGet(LS_PLAYER) || {}),
+};
+const savePlayerOpts = () => lsSet(LS_PLAYER, player.opts);
+const canSpeak = () => typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined';
+const sentencesOf = (t) => (String(t || '').match(/[^。！？]+[。！？]?/g) || []).map((s) => s.trim()).filter(Boolean);
+const forSpeech = (t) => String(t).replace(/[「」『』【】]/g, '').replace(/[→⇒]/g, '、').replace(/[＋+]/g, 'と').replace(/[／/]/g, '、');
+const jaVoices = () => (canSpeak() ? (window.speechSynthesis.getVoices() || []).filter((v) => /^ja([-_]|$)/i.test(v.lang)) : []);
+const isMale = (v) => !!v && MALE_RE.test(v.name);
+function pickVoice() {
+  const vs = jaVoices();
+  return vs.find((v) => v.name === player.opts.voiceName) || vs.find(isMale) || vs[0] || null;
+}
+const voiceLabel = (v) => (v ? v.name.replace(/^(Microsoft|Google|Apple)\s+/i, '').replace(/\s*(Online|\(|（|-\s).*$/i, '').trim() || v.name : '');
+if (canSpeak()) window.speechSynthesis.onvoiceschanged = () => { if (player.open) updatePlayer(); };
+
+function buildScenes(q, perm, picks) {
+  const L = (o) => LETTERS[perm.indexOf(o)];
+  const join = (os) => os.map(L).sort().join('・');
+  const corr = join(q.answer);
+  const wrong = picks.filter((o) => !q.answer.includes(o));
+  const keys = [...new Set([...String(q.explain).matchAll(/「([^」]{2,40})」/g)].map((m) => m[1]))].slice(0, 5);
+  const ask = sentencesOf(q.stem).slice(-1)[0] || q.stem;
+  const row = (o, cls, clamp) => `<div class="v-ch ${cls}${clamp ? ' clamp' : ''}"><span class="l">${L(o)}</span><span class="t">${esc(q.choices[o])}</span><span class="m">${cls === 'ok' ? ICON.ok : cls === 'ng' ? ICON.ng : ''}</span></div>`;
+  const lines = (ls) => `<div class="v-lines">${ls.map((t, n) => `<p class="v-line" data-n="${n}">${esc(t)}</p>`).join('')}</div>`;
+  const s = [];
+  s.push({ hud: 'BRIEFING', title: 'この問題の決め手', html: `<p class="v-ask">${esc(ask)}</p>${keys.length ? `<div class="v-keys">${keys.map((k, n) => `<span class="v-key" style="--d:${n}">${esc(k)}</span>`).join('')}</div>` : ''}`, lines: keys.length ? [`この問題の決め手は、${keys.map((k) => `「${k}」`).join('、')}です。`] : [ask] });
+  s.push({ hud: 'ANSWER CHECK', title: 'あなたの回答と正解', html: `<div class="v-list">${perm.map((o) => row(o, q.answer.includes(o) ? 'ok' : picks.includes(o) ? 'ng' : '', true)).join('')}</div>`, lines: [picks.length ? `あなたの回答は ${join(picks)}、正解は ${corr} です。` : `この問題は未回答でした。正解は ${corr} です。`] });
+  for (const o of wrong.slice(0, 2)) s.push({ hud: 'MISS ANALYSIS', title: `なぜ ${L(o)} は誤りか`, html: row(o, 'ng'), lines: sentencesOf(q.why[o]) });
+  s.push({ hud: 'SOLUTION', title: `なぜ ${corr} が正解か`, html: `<div class="v-list">${q.answer.map((o) => row(o, 'ok')).join('')}</div>`, lines: q.answer.flatMap((o) => sentencesOf(q.why[o])) });
+  const ex = sentencesOf(q.explain);
+  s.push({ hud: q.diagram ? 'ARCHITECTURE' : 'REASONING', title: q.diagram ? '正解の構成と考え方' : '考え方', html: q.diagram ? renderDiagram(q.diagram) : lines(ex), lines: ex });
+  s.push({ hud: 'TAKEAWAY', title: '覚えるポイント', html: `<p class="v-point">${esc(q.point)}</p>`, lines: sentencesOf(q.point) });
+  return s.map((x) => (x.lines.length ? x : Object.assign(x, { lines: [x.title] })));
+}
+const playerShell = () => `<div class="pl-backdrop" data-act="video-close"></div>
+<section class="pl" role="dialog" aria-modal="true" aria-label="動画で解説">
+  <header class="pl-head"><span class="hud-label">REPLAY // ${esc(player.q.id)}</span><button type="button" class="pl-x" data-act="video-close" aria-label="閉じる">${ICON.close}</button></header>
+  <div class="pl-screen"><div class="pl-title"><span class="hud-label" id="pl-hud"></span><h2 id="pl-title"></h2></div><div class="pl-stage" id="pl-stage"></div></div>
+  <p class="pl-sub" id="pl-sub" aria-live="polite"></p>
+  <div class="pl-bar" id="pl-bar">${player.scenes.map((sc, n) => `<button type="button" data-act="video-seg" data-n="${n}" aria-label="場面 ${n + 1}: ${esc(sc.title)}"></button>`).join('')}</div>
+  <div class="pl-ctrl"><button type="button" class="pl-btn" data-act="video-prev" aria-label="前の場面">${ICON.prev}</button><button type="button" class="pl-btn main" data-act="video-toggle" data-key="pl-toggle" id="pl-toggle"></button><button type="button" class="pl-btn" data-act="video-next" aria-label="次の場面">${ICON.next}</button><span class="grow"></span><button type="button" class="pl-opt" data-act="video-voice" id="pl-voice"></button><button type="button" class="pl-opt" data-act="video-pick" id="pl-pick"></button><button type="button" class="pl-opt" data-act="video-rate" id="pl-rate" aria-label="読み上げの速さ"></button></div>
+</section>`;
+function openVideo(q, perm, picks) {
+  closeVideo(true);
+  Object.assign(player, { open: true, q, scenes: buildScenes(q, perm, picks), i: 0, line: 0, playing: true, ended: false, back: q.id });
+  const box = document.getElementById('player');
+  box.hidden = false;
+  box.innerHTML = playerShell();
+  if (document.body) document.body.style.overflow = 'hidden';
+  renderStage();
+  playLine();
+  const t = document.getElementById('pl-toggle');
+  if (t && t.focus) t.focus({ preventScroll: true });
+}
+function closeVideo(silent) {
+  player.seq++;
+  clearTimeout(player.timer);
+  if (canSpeak()) window.speechSynthesis.cancel();
+  if (!player.open) return;
+  player.open = false;
+  player.playing = false;
+  const box = document.getElementById('player');
+  box.hidden = true;
+  box.innerHTML = '';
+  if (document.body) document.body.style.overflow = '';
+  if (!silent) {
+    const b = document.querySelector(`[data-act="video"][data-id="${player.back}"]`);
+    if (b) b.focus({ preventScroll: true });
+  }
+}
+function renderStage() {
+  const sc = player.scenes[player.i];
+  const st = document.getElementById('pl-stage');
+  st.innerHTML = sc.html;
+  document.getElementById('pl-hud').textContent = `SCENE ${player.i + 1}/${player.scenes.length} // ${sc.hud}`;
+  document.getElementById('pl-title').textContent = sc.title;
+  // 構成図は 枠 → 箱 → 矢印 → ラベル の順に現れるようにする
+  const svg = st.querySelector ? st.querySelector('svg.dg') : null;
+  if (svg) {
+    let t = 0.2;
+    for (const sel of ['g.g', 'g[style]', 'line.e-line', 'text.e-label']) for (const n of svg.querySelectorAll(sel)) { n.style.animationDelay = t.toFixed(2) + 's'; t += 0.18; }
+  }
+  updatePlayer();
+}
+function updatePlayer() {
+  if (!player.open) return;
+  const sc = player.scenes[player.i];
+  document.getElementById('pl-sub').textContent = player.ended ? '再生が終わりました。▶ で最初からもう一度再生します。' : sc.lines[Math.min(player.line, sc.lines.length - 1)];
+  const bar = document.getElementById('pl-bar');
+  if (bar.querySelectorAll) {
+    bar.querySelectorAll('button').forEach((b, n) => {
+      b.className = n < player.i || (player.ended && n === player.i) ? 'done' : n === player.i ? 'now' : '';
+      b.style.setProperty('--p', n === player.i ? `${Math.round((Math.min(player.line, sc.lines.length) / sc.lines.length) * 100)}%` : '0%');
+    });
+  }
+  const st = document.getElementById('pl-stage');
+  if (st.querySelectorAll) for (const p of st.querySelectorAll('.v-line')) { p.classList.toggle('on', +p.dataset.n === player.line); p.classList.toggle('past', +p.dataset.n < player.line); }
+  const tg = document.getElementById('pl-toggle');
+  tg.innerHTML = player.playing ? ICON.pause : ICON.play;
+  tg.setAttribute('aria-label', player.playing ? '一時停止' : '再生');
+  const speak = canSpeak();
+  const vb = document.getElementById('pl-voice');
+  vb.innerHTML = `${player.opts.voice && speak ? ICON.voice : ICON.mute}<span>${speak ? (player.opts.voice ? '読み上げ' : '音声オフ') : '音声なし'}</span>`;
+  vb.setAttribute('aria-pressed', String(player.opts.voice && speak));
+  vb.disabled = !speak;
+  const v = pickVoice();
+  const pk = document.getElementById('pl-pick');
+  pk.hidden = !speak || jaVoices().length < 2;
+  pk.textContent = v ? `声: ${voiceLabel(v)}${isMale(v) ? '（男性）' : ''}` : '';
+  pk.title = v && !isMale(v) ? 'この端末には男性の日本語音声が見つかりません。押すとほかの声に切り替えます。' : '押すと声を切り替えます。';
+  document.getElementById('pl-rate').textContent = `${player.opts.rate}x`;
+}
+function playLine() {
+  const seq = ++player.seq;
+  clearTimeout(player.timer);
+  if (canSpeak()) window.speechSynthesis.cancel();
+  updatePlayer();
+  if (!player.playing) return;
+  const sc = player.scenes[player.i];
+  const text = sc.lines[player.line];
+  const next = () => { if (seq !== player.seq || !player.playing) return; player.line++; playLine(); };
+  if (text == null) {
+    player.timer = setTimeout(() => { if (seq === player.seq && player.playing) gotoScene(player.i + 1); }, 600);
+    return;
+  }
+  const rate = player.opts.rate;
+  if (player.opts.voice && canSpeak()) {
+    const u = new window.SpeechSynthesisUtterance(forSpeech(text));
+    const v = pickVoice();
+    u.lang = v ? v.lang : 'ja-JP';
+    if (v) u.voice = v;
+    u.rate = rate;
+    u.pitch = isMale(v) ? BOY_PITCH : 1;
+    u.onend = next;
+    u.onerror = next;
+    window.speechSynthesis.speak(u);
+    player.timer = setTimeout(next, (text.length * 220 + 2500) / rate); // 終了の通知が来ない環境のための保険
+  } else {
+    player.timer = setTimeout(next, (text.length * 120 + 900) / rate);
+  }
+}
+function gotoScene(n) {
+  if (n >= player.scenes.length) {
+    player.seq++;
+    clearTimeout(player.timer);
+    player.playing = false;
+    player.ended = true;
+    updatePlayer();
+    return;
+  }
+  player.i = Math.max(0, n);
+  player.line = 0;
+  player.ended = false;
+  renderStage();
+  playLine();
+}
+function toggleVideo() {
+  if (player.ended) { player.playing = true; gotoScene(0); return; }
+  player.playing = !player.playing;
+  if (player.playing) { playLine(); return; }
+  player.seq++;
+  clearTimeout(player.timer);
+  if (canSpeak()) window.speechSynthesis.cancel();
+  updatePlayer();
+}
+
 const confirmBox = (msg, yesAct, yesLabel, noAct, noLabel, tone) => `<div class="confirm${tone === 'neutral' ? ' neutral' : ''}" role="alertdialog" aria-label="${esc(msg)}"><p>${esc(msg)}</p><div class="btn-row"><button type="button" class="btn ${tone === 'neutral' ? 'primary' : 'danger'}" data-act="${yesAct}" data-key="confirm-yes">${yesLabel}</button><button type="button" class="btn" data-act="${noAct}">${noLabel}</button></div></div>`;
 const meter = (v, passLine) => `<div class="meter" role="img" aria-label="${v == null ? '記録なし' : pct(v) + '%'}">${v == null ? '' : `<span style="width:${Math.max(0, Math.min(100, v * 100))}%"></span>`}${passLine ? `<i class="pass" style="left:calc(${EXAM.pass}% - 1px)"></i>` : ''}</div>`;
 
@@ -1425,6 +1692,7 @@ function viewSelect() {
 // 試験ごとに記録・解答中の状態・演習の設定を読み直す。模擬試験の途中でも、残り時間はそのまま進む。
 function switchExam(k) {
   if (k === X.key || !EXAM_KEYS.includes(k)) return;
+  closeVideo(true);
   stopTimer();
   applyExam(k);
   lsSet(LS_EXAM, X.key);
@@ -1460,6 +1728,37 @@ document.addEventListener('click', (ev) => {
     case 'exam-switch':
       switchExam(el.dataset.x);
       break;
+    case 'video': {
+      const q = QMAP[el.dataset.id];
+      if (!q) break;
+      const nums = (s) => (s ? String(s).split(',').map(Number) : []);
+      const perm = nums(el.dataset.perm);
+      openVideo(q, perm.length === q.choices.length ? perm : range(q.choices.length), nums(el.dataset.picks));
+      break;
+    }
+    case 'video-close': closeVideo(); break;
+    case 'video-toggle': toggleVideo(); break;
+    case 'video-next': gotoScene(player.i + 1); break;
+    case 'video-prev': gotoScene(player.line > 0 ? player.i : player.i - 1); break;
+    case 'video-seg': gotoScene(+el.dataset.n); break;
+    case 'video-voice':
+      player.opts.voice = !player.opts.voice;
+      savePlayerOpts();
+      if (player.playing) playLine(); else updatePlayer();
+      break;
+    case 'video-rate':
+      player.opts.rate = RATES[(RATES.indexOf(player.opts.rate) + 1) % RATES.length];
+      savePlayerOpts();
+      if (player.playing) playLine(); else updatePlayer();
+      break;
+    case 'video-pick': {
+      const vs = jaVoices();
+      if (!vs.length) break;
+      player.opts.voiceName = vs[(vs.indexOf(pickVoice()) + 1) % vs.length].name;
+      savePlayerOpts();
+      if (player.playing) playLine(); else updatePlayer();
+      break;
+    }
     case 'enter-exam':
       entry = false;
       if (el.dataset.x !== X.key) switchExam(el.dataset.x);
@@ -1468,6 +1767,7 @@ document.addEventListener('click', (ev) => {
       break;
     case 'open-select':
       if (ev.preventDefault) ev.preventDefault();
+      closeVideo(true);
       entry = true; ui.confirm = null;
       render(); window.scrollTo(0, 0);
       break;
@@ -1608,6 +1908,13 @@ document.addEventListener('keydown', (ev) => {
   if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const tag = (ev.target.tagName || '').toLowerCase();
   if (['input', 'select', 'textarea'].includes(tag)) return;
+  if (player.open) {
+    if (ev.key === 'Escape') { ev.preventDefault(); closeVideo(); }
+    else if (ev.key === ' ' && tag !== 'button') { ev.preventDefault(); toggleVideo(); }
+    else if (ev.key === 'ArrowRight') { ev.preventDefault(); gotoScene(player.i + 1); }
+    else if (ev.key === 'ArrowLeft') { ev.preventDefault(); gotoScene(player.line > 0 ? player.i : player.i - 1); }
+    return;
+  }
   const r = route();
   const s = r === 'practice' ? sessions.practice : r === 'exam' ? sessions.exam : null;
   if (!s || s.finished || ui.confirm) return;
@@ -1633,7 +1940,7 @@ document.addEventListener('pointermove', (ev) => {
   tip.style.top = Math.max(bar.top - box.top, 40) + 'px';
   tip.hidden = false;
 });
-window.addEventListener('hashchange', () => { entry = false; ui.confirm = null; render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { closeVideo(true); entry = false; ui.confirm = null; render(); window.scrollTo(0, 0); });
 
 renderSwitch();
 render();
