@@ -1,7 +1,7 @@
 {
-  "name": "SAA ドリル",
-  "short_name": "SAA ドリル",
-  "description": "AWS 認定 SAA-C03 対策の演習アプリ。本番形式のオリジナル問題 118 問を、解説・構成図・苦手復習・模擬試験で学習できます。",
+  "name": "AWS ドリル",
+  "short_name": "AWS ドリル",
+  "description": "AWS 認定（SAA-C03・CLF-C02）対策の演習アプリ。本番形式のオリジナル問題（SAA 236 問・CLF 236 問）を、解説・構成図・苦手復習・模擬試験で学習できます。",
   "lang": "ja",
   "start_url": "./",
   "scope": "./",
